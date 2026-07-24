@@ -11,6 +11,9 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  border: 0;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Initial Message Bubble */
@@ -18,11 +21,15 @@
   position: absolute;
   bottom: 100px;
   right: 0;
+  display: block;
+  width: 260px;
   animation: floatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 10001;
 }
 
 .sofi-message-bubble {
+  display: block;
+  width: 260px;
   background: white;
   padding: 16px 20px;
   border-radius: 20px 20px 4px 20px;
@@ -38,6 +45,13 @@
   font-weight: 600;
   color: #241A33;
   font-family: 'Inter', sans-serif;
+}
+
+.sofi-message-bubble strong {
+  display: block;
+  color: #241A33;
+  font-size: 0.95rem;
+  text-align: left;
 }
 
 .sofi-message-sub {
@@ -536,6 +550,14 @@
   border-top: 1px solid rgba(139, 92, 246, 0.1);
   background: white;
   flex-shrink: 0;
+}
+
+.sofi-disclaimer {
+  padding: 8px 18px 11px;
+  color: #777083;
+  background: #fff;
+  text-align: center;
+  font-size: 0.62rem;
 }
 
 .sofi-human-btn {

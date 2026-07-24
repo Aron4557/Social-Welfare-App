@@ -1,0 +1,229 @@
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(330px, 0.8fr) minmax(560px, 1.2fr);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.auth-story {
+  min-height: 100vh;
+  padding: clamp(28px, 5vw, 72px);
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255, 176, 136, 0.45), transparent 34%),
+    linear-gradient(155deg, #2d203e 0%, #241a33 68%, #4c2e3c 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 72px;
+}
+
+.professional-auth .auth-story {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(58, 196, 163, 0.35), transparent 35%),
+    linear-gradient(155deg, #1b3b39, #162c2d 72%, #27473f);
+}
+
+.auth-home-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 750;
+  width: fit-content;
+}
+
+.auth-kicker {
+  color: var(--beacon);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.auth-story h1 {
+  color: #fff;
+  font: 400 clamp(3.2rem, 6vw, 6.6rem)/0.88 var(--font-display);
+  letter-spacing: -0.055em;
+  max-width: 720px;
+  margin: 14px 0 28px;
+}
+
+.auth-story p:not(.auth-kicker) {
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 580px;
+  line-height: 1.75;
+}
+
+.auth-trust {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+}
+
+.auth-panel {
+  padding: clamp(32px, 6vw, 90px) clamp(22px, 6vw, 86px);
+  display: grid;
+  place-items: center;
+}
+
+.auth-panel-inner {
+  width: min(760px, 100%);
+}
+
+.auth-panel-compact {
+  width: min(500px, 100%);
+}
+
+.auth-panel h2 {
+  font: 400 clamp(2.4rem, 5vw, 4.2rem)/1 var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin: 8px 0 30px;
+}
+
+.auth-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 22px;
+}
+
+.professional-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid rgba(36, 26, 51, 0.15);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-align: left;
+}
+
+.full-field {
+  grid-column: 1 / -1;
+}
+
+.auth-form input,
+.auth-form textarea,
+.auth-form select {
+  width: 100%;
+  border: 1px solid rgba(36, 26, 51, 0.16);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  padding: 13px 14px;
+  font: 500 0.9rem/1.4 var(--font-body);
+  outline: none;
+}
+
+.auth-form input:focus,
+.auth-form textarea:focus,
+.auth-form select:focus {
+  border-color: var(--beacon);
+  box-shadow: 0 0 0 3px rgba(255, 122, 69, 0.12);
+}
+
+.auth-submit {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 22px;
+  background: var(--ink);
+  color: #fff;
+  font: 750 0.86rem/1 var(--font-body);
+  cursor: pointer;
+}
+
+.auth-submit:disabled {
+  opacity: 0.55;
+}
+
+.form-error {
+  color: #a22920;
+  background: #fff0ed;
+  border: 1px solid #ffc8be;
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+}
+
+.auth-alt,
+.signin-options {
+  margin-top: 24px;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+}
+
+.auth-alt a,
+.signin-options a {
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.signin-options {
+  display: grid;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-story {
+    min-height: 420px;
+    padding: 34px 24px;
+    gap: 50px;
+  }
+
+  .auth-story h1 {
+    font-size: clamp(3rem, 13vw, 5.4rem);
+  }
+}
+
+@media (max-width: 580px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-field {
+    grid-column: auto;
+  }
+
+  .auth-title-row {
+    flex-direction: column;
+    margin-bottom: 24px;
+  }
+}

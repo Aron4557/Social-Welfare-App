@@ -1,12 +1,15 @@
 // src/pages/TalkToSomeone.jsx
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { collection, onSnapshot } from "firebase/firestore";
 import gsap from "gsap";
 import {
   ArrowLeft, Search, Send, MessageCircle,
   MapPin, Briefcase, Circle, CheckCheck, Phone, Mail, Star
 } from "lucide-react";
 import logo from "../assets/logo.png";
+import { useAuth } from "../context/AuthContext";
+import { db } from "../firebase";
 import "./TalkToSomeone.css";
 
 // Mock data for social workers
@@ -90,6 +93,8 @@ function formatDay(timestamp) {
 }
 
 export default function TalkToSomeone() {
+  const { isProfessional, profile } = useAuth();
+  const [workers, setWorkers] = useState(SOCIAL_WORKERS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedWorkerId, setSelectedWorkerId] = useState(null);
   const [messageText, setMessageText] = useState("");
@@ -103,17 +108,46 @@ export default function TalkToSomeone() {
     gsap.fromTo(panelRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
   }, []);
 
+  useEffect(
+    () =>
+      onSnapshot(
+        collection(db, "Professionals"),
+        (snapshot) => {
+          const professionals = snapshot.docs.map((item) => {
+            const data = item.data();
+            const name = data.name || data.Name || item.id;
+            return {
+              id: item.id,
+              name,
+              specialty: data.position || data.Position || "Social welfare professional",
+              location: data.location || data.Location || "Namibia",
+              available: data.available !== false,
+              rating: data.rating || data.Rating || 0,
+              reviews: data.reviews || 0,
+              online: data.online !== false,
+              lastActive: data.lastActive || "Profile available",
+              avatar: name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase(),
+              qualifications: data.qualifications || data.certification || data.Certification || "",
+            };
+          });
+          if (professionals.length) setWorkers(professionals);
+        },
+        () => {},
+      ),
+    [],
+  );
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const filteredWorkers = SOCIAL_WORKERS.filter(worker =>
+  const filteredWorkers = workers.filter(worker =>
     worker.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     worker.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
     worker.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const selectedWorker = SOCIAL_WORKERS.find(w => w.id === selectedWorkerId);
+  const selectedWorker = workers.find(w => w.id === selectedWorkerId);
 
   const handleSend = () => {
     const text = messageText.trim();
@@ -178,7 +212,9 @@ export default function TalkToSomeone() {
           </h1>
         </div>
         <div className="talk-header-right">
-          <span className="talk-user-badge">You</span>
+          <span className="talk-user-badge">
+            {isProfessional ? profile?.name || "Professional" : "Anonymous member"}
+          </span>
         </div>
       </header>
 
@@ -233,6 +269,9 @@ export default function TalkToSomeone() {
                     <p className="talk-provider-rating">
                       <Star size={12} /> {worker.rating} ({worker.reviews} reviews)
                     </p>
+                    {worker.qualifications && (
+                      <p className="talk-provider-location">{worker.qualifications}</p>
+                    )}
                     {worker.available && (
                       <span className="talk-available-badge">Available Now</span>
                     )}

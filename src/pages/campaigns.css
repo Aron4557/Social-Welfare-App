@@ -1,0 +1,464 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap");
+
+.primary-action,
+.discussion-button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: 700 0.8rem/1 var(--font-body);
+  cursor: pointer;
+}
+
+.role-note {
+  display: block;
+  max-width: 250px;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.calendar-card {
+  background: #fff;
+  border: 1px solid rgba(36, 26, 51, 0.1);
+  border-radius: 24px;
+  padding: clamp(18px, 3vw, 32px);
+  box-shadow: 0 18px 50px rgba(36, 26, 51, 0.06);
+  margin-bottom: 40px;
+}
+
+.calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.calendar-head h2,
+.section-heading-row h2 {
+  margin: 6px 0 0;
+  color: var(--ink);
+  font: 400 2rem/1 var(--font-display);
+}
+
+.calendar-controls {
+  display: flex;
+  gap: 7px;
+}
+
+.calendar-controls button,
+.text-button {
+  border: 1px solid rgba(36, 26, 51, 0.12);
+  background: #fff;
+  color: var(--ink);
+  padding: 8px 11px;
+  border-radius: 10px;
+  font: 700 0.75rem/1 var(--font-body);
+  cursor: pointer;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.calendar-weekdays {
+  margin-bottom: 8px;
+}
+
+.calendar-weekdays span {
+  color: var(--ink-soft);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.calendar-day {
+  min-height: 74px;
+  padding: 10px;
+  border-radius: 13px;
+  border: 1px solid transparent;
+  background: #faf8f3;
+  color: var(--ink);
+  font-family: var(--font-body);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.calendar-day:hover,
+.calendar-day.selected {
+  border-color: var(--beacon);
+}
+
+.calendar-day.selected {
+  background: #fff0e8;
+}
+
+.calendar-day.has-events span {
+  font-weight: 800;
+}
+
+.calendar-day small {
+  color: var(--beacon);
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+
+.campaign-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.campaign-list {
+  display: grid;
+  gap: 14px;
+}
+
+.campaign-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 18px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(36, 26, 51, 0.1);
+  border-radius: 20px;
+  padding: 22px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.campaign-card.active {
+  border-color: rgba(255, 122, 69, 0.55);
+}
+
+.campaign-card:hover {
+  transform: translateY(-2px);
+}
+
+.campaign-date-block {
+  height: 70px;
+  border-radius: 16px;
+  background: var(--ink);
+  color: #fff;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.campaign-date-block strong {
+  font: 400 1.8rem/1 var(--font-display);
+}
+
+.campaign-date-block span {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.category-pill {
+  color: var(--signal-deep);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.campaign-card h3,
+.campaign-chat h3 {
+  color: var(--ink);
+  margin: 6px 42px 8px 0;
+  font-size: 1.14rem;
+}
+
+.campaign-card-copy > p {
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.campaign-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin: 16px 0;
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+}
+
+.campaign-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pin-button {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  border: 1px solid rgba(36, 26, 51, 0.12);
+  background: #fff;
+  color: var(--ink-soft);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.pin-button.pinned {
+  color: var(--beacon);
+  background: #fff0e8;
+}
+
+.discussion-button {
+  background: transparent;
+  border: 1px solid rgba(36, 26, 51, 0.15);
+  color: var(--ink);
+  padding: 9px 13px;
+}
+
+.campaign-chat {
+  position: sticky;
+  top: 94px;
+  overflow: hidden;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 22px;
+  min-height: 540px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-heading {
+  padding: 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.campaign-chat .eyebrow {
+  color: var(--beacon-soft);
+}
+
+.campaign-chat h3 {
+  color: #fff;
+  margin-right: 0;
+}
+
+.chat-notice {
+  padding: 12px 22px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.chat-messages {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  max-height: 390px;
+  overflow-y: auto;
+}
+
+.chat-message {
+  background: rgba(255, 255, 255, 0.09);
+  padding: 11px 13px;
+  border-radius: 13px 13px 13px 3px;
+}
+
+.chat-message span {
+  color: var(--beacon-soft);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.chat-message p {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.empty-copy {
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  padding: 36px 12px;
+  font-size: 0.78rem;
+}
+
+.chat-compose {
+  display: flex;
+  gap: 8px;
+  padding: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-compose input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 12px;
+  font: 500 0.76rem var(--font-body);
+}
+
+.chat-compose button {
+  border: 0;
+  border-radius: 12px;
+  background: var(--beacon);
+  color: #fff;
+  width: 44px;
+  display: grid;
+  place-items: center;
+}
+
+.inline-error {
+  color: #ffb9ad;
+  font-size: 0.72rem;
+  padding: 8px 18px;
+}
+
+.empty-state {
+  padding: 50px;
+  text-align: center;
+  color: var(--ink-soft);
+  border: 1px dashed rgba(36, 26, 51, 0.2);
+  border-radius: 18px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(20, 14, 29, 0.64);
+  backdrop-filter: blur(10px);
+}
+
+.campaign-modal {
+  width: min(680px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--paper);
+  border-radius: 24px;
+  padding: 30px;
+  position: relative;
+}
+
+.campaign-modal h2 {
+  color: var(--ink);
+  font: 400 2.5rem/1 var(--font-display);
+  margin: 7px 0 25px;
+}
+
+.modal-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border: 0;
+  background: #fff;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+}
+
+.campaign-modal form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.campaign-modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.campaign-modal input,
+.campaign-modal select,
+.campaign-modal textarea {
+  border: 1px solid rgba(36, 26, 51, 0.14);
+  border-radius: 11px;
+  background: #fff;
+  color: var(--ink);
+  padding: 11px 12px;
+  font: 500 0.82rem var(--font-body);
+}
+
+.modal-full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 850px) {
+  .campaign-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .campaign-chat {
+    position: static;
+  }
+}
+
+@media (max-width: 580px) {
+  .calendar-day {
+    min-height: 48px;
+    padding: 7px;
+  }
+
+  .calendar-day small {
+    display: none;
+  }
+
+  .calendar-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .campaign-card {
+    grid-template-columns: 54px 1fr;
+    padding: 16px;
+  }
+
+  .campaign-date-block {
+    height: 58px;
+  }
+
+  .campaign-modal form {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-full {
+    grid-column: auto;
+  }
+}

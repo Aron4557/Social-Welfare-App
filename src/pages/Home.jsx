@@ -5,9 +5,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { 
   BookOpen, MapPin, MessageCircle, Megaphone, HeartHandshake, 
-  Users, Heart, Coffee, Phone, Search, ArrowRight, Shield, Sparkles
+  Users, Heart, Coffee, Phone, Search, ArrowRight, Shield, Sparkles,
+  LogIn, UserRoundPlus, LogOut
 } from "lucide-react";
 import SOFIAssistant from "../components/SOFIAssistant";
+import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo.png";
 import bg from "../assets/background.jpg";
 import "./Home.css";
@@ -37,13 +39,13 @@ const FEATURES = [
     title: "Campaigns", 
     desc: "Awareness drives and events happening near you.", 
     Icon: Megaphone,
-    link: "#"
+    link: "/campaigns"
   },
   { 
     title: "Better Together", 
-    desc: "Support a vulnerable child directly.", 
+    desc: "Share anonymously and find community support.", 
     Icon: HeartHandshake,
-    link: "#"
+    link: "/better-together"
   },
 ];
 
@@ -78,6 +80,7 @@ const HEADLINE_WORDS = ["We're", "better", "together."];
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const headlineRef = useRef(null);
   const cardsRef = useRef([]);
   const donationRef = useRef([]);
@@ -237,6 +240,20 @@ export default function Home() {
           />
         </div>
         <div className="header-actions">
+          {user ? (
+            <button className="home-auth-btn home-auth-secondary" onClick={logout}>
+              <LogOut size={16} /> <span>Sign out</span>
+            </button>
+          ) : (
+            <>
+              <button className="home-auth-btn home-auth-secondary" onClick={() => navigate("/sign-in")}>
+                <LogIn size={16} /> <span>Sign in</span>
+              </button>
+              <button className="home-auth-btn" onClick={() => navigate("/sign-up")}>
+                <UserRoundPlus size={16} /> <span>Sign up</span>
+              </button>
+            </>
+          )}
           <button className="emergency-btn" ref={emergencyRef}>
             <Phone size={18} />
             <span>Emergency</span>

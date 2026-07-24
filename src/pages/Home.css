@@ -115,10 +115,39 @@ html, body {
   }
 }
 
+@media (max-width: 768px) {
+  .home-auth-btn span {
+    display: none;
+  }
+
+  .home-auth-btn {
+    padding: 10px;
+  }
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.home-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  padding: 10px 15px;
+  background: #241A33;
+  color: #fff;
+  font: 700 0.78rem/1 'Inter', sans-serif;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+}
+
+.home-auth-secondary {
+  background: rgba(255, 255, 255, 0.86);
+  color: #241A33;
 }
 
 /* Live Assistant Button */

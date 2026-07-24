@@ -405,6 +405,7 @@ export default function FindHelp() {
   useEffect(() => {
     // This effect now only calls filterServices which is a callback
     // The warning is suppressed because filterServices uses useCallback
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     filterServices();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, searchQuery, userLocation]);

@@ -10,7 +10,7 @@ import {
   Activity, AlertCircle,
   ExternalLink, Share2, Bookmark,
   Search, AlertTriangle, PhoneCall, Ambulance,
-  ShieldAlert, LifeBuoy, Building, MapPin
+  ShieldAlert, LifeBuoy, Building
 } from "lucide-react";
 import SOFIAssistant from "../components/SOFIAssistant";
 import logo from "../assets/logo.png";
@@ -255,9 +255,11 @@ export default function InfoHub() {
     const params = new URLSearchParams(location.search);
     const searchParam = params.get('search');
     if (searchParam !== null && searchParam !== searchQuery) {
+      // Keep the search field synchronized when navigating from the home search.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearchQuery(searchParam);
     }
-  }, [location.search]);
+  }, [location.search, searchQuery]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
