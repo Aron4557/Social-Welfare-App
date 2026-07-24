@@ -31,7 +31,7 @@ const FEATURES = [
     title: "Talk to Someone", 
     desc: "Anonymous chat with a real person. No judgment.", 
     Icon: MessageCircle,
-    link: "#"
+    link: "/talk-to-someone"
   },
   { 
     title: "Campaigns", 
@@ -270,7 +270,7 @@ export default function Home() {
               <Search size={20} className="search-icon" />
               <input
                 type="text"
-                placeholder="🔍 AI-powered search: Find services or counselors near you..."
+                placeholder="Search for services or counselors near you..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="search-input"
