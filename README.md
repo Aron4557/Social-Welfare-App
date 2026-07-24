@@ -1,53 +1,74 @@
 # Social Welfare Namibia
 
-**Social Welfare Namibia** is a digital platform that connects individuals and families with essential social welfare services, healthcare facilities, emergency support, and community assistance across Namibia.
+A practical social-welfare MVP built for the AWS User Group Windhoek **“For The People” Hackathon**. It helps people across Namibia find services, speak privately with professionals, join community campaigns, and seek anonymous peer support.
 
-Developed for the **AWS User Group Windhoek "For The People" Hackathon**, the platform aims to simplify access to verified welfare information and support services through a single, easy-to-use application.
+## Implemented features
 
-## Features
+- Firebase email/password sign-in.
+- Separate member and professional registration flows.
+- Firestore profiles with member details, professional qualifications, certifications, location, role, and verification status.
+- Sign-in protection only on **Talk to Someone**; all discovery and community pages remain public.
+- A campaign calendar with professional-only event publishing, public pinning, and campaign-specific Realtime Database group chats.
+- **Better Together**, an open forum where members and guests are anonymous while professionals are identified by role.
+- SOFI mental-health assistant connected to Gemini through a server-only API key.
+- Shared typography, colors, buttons, responsive navigation, and mobile layouts.
 
-* 📚 **Information Hub**
+## Local setup
 
-  * Access information on social welfare programs and support services.
-  * Learn eligibility requirements, required documents, and contact details.
+Requirements: Node.js 20 or newer.
 
-* 📍 **Find Help Near You**
+```bash
+npm install
+copy .env.example .env
+npm run build
+npm start
+```
 
-  * Locate nearby hospitals, clinics, social workers, shelters, NGOs, and other support centers.
+Set `GEMINI_API_KEY` in `.env` before starting the production server. The key is read only by `server.mjs` and is never bundled into the browser.
 
-* 💬 **Anonymous Support Chat**
+For local development, one command starts both the frontend and SOFI API server:
 
-  * Seek guidance privately and receive recommendations for the most appropriate services and organizations.
+```bash
+npm run dev
+```
 
-* 📢 **Community Campaigns**
+Vite proxies `/api` to the local SOFI server on port `4174`. `server.mjs` loads `.env`
+automatically without exposing its values to the browser.
 
-  * Stay updated on food drives, blood donation campaigns, vaccination programs, community outreach events, and other public initiatives.
+## Firebase setup
 
-## Mission
+The app defaults to the supplied `social-welfare-app-9f22a` project. It uses:
 
-Our mission is to make social welfare services more accessible by providing a centralized platform where anyone can quickly find trusted information, locate nearby assistance, and connect with the right support when they need it most.
+- Authentication: email/password
+- Firestore: `users`, `Professionals`, `campaigns`, and `forumPosts`
+- Realtime Database: `campaignChats/{campaignId}/messages`
 
-## Tech Stack
+Deploy the included rules with the Firebase CLI:
 
-* React
-* Node.js
-* Express.js
-* PostgreSQL (or SQLite for the MVP)
-* Tailwind CSS
-* Leaflet & OpenStreetMap
-* AWS EC2
+```bash
+firebase use social-welfare-app-9f22a
+firebase deploy --only firestore:rules,database
+```
 
-## Future Enhancements
+To load demonstration campaign chats, import [public/campaign-chats.seed.json](public/campaign-chats.seed.json) from the Firebase Realtime Database console.
 
-* AI-powered assistance and recommendations
-* Appointment booking
-* Real-time chat with social workers
-* SMS and email notifications
-* Multi-language support for Namibian languages
-* Volunteer and donation management
+The rules deliberately allow public forum and campaign-chat contributions because those features are inclusive of guests. They validate lengths and force non-professional forum authors to use the anonymous label. Add moderation, App Check, and rate limiting before a large public launch.
 
-## Team
+## Production / AWS EC2
 
-**CodeVengers**
+1. Install Node.js 20+ on the EC2 instance.
+2. Copy the repository and run `npm ci && npm run build`.
+3. Add `GEMINI_API_KEY` to the instance environment.
+4. Run `npm start` behind Nginx or a process manager such as systemd.
+5. Allow the chosen HTTP/HTTPS ports in the EC2 security group.
 
-*Building technology that connects people with the help they need, when they need it.*
+`server.mjs` serves the Vite `dist` directory, supports SPA routes, and exposes `POST /api/sofi`.
+
+## Verification
+
+```bash
+npm run lint
+npm run build
+```
+
+The application was also visually checked at desktop and mobile breakpoints.

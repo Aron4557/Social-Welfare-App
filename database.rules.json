@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "campaignChats": {
+      "$campaignId": {
+        "messages": {
+          ".read": true,
+          "$messageId": {
+            ".write": "!data.exists() && newData.hasChildren(['text', 'author', 'createdAt'])",
+            ".validate": "newData.child('text').isString() && newData.child('text').val().length <= 800 && newData.child('author').isString() && newData.child('author').val().length <= 100 && newData.child('createdAt').isNumber()"
+          }
+        }
+      }
+    }
+  }
+}
