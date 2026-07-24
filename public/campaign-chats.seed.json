@@ -1,0 +1,31 @@
+{
+  "campaignChats": {
+    "mental-health-walk": {
+      "messages": {
+        "welcome": {
+          "author": "Campaign organizer · Professional",
+          "text": "Welcome to the Walk for Mental Wellness group. Ask practical event questions here, and please keep personal medical information private.",
+          "createdAt": 1784898000000
+        }
+      }
+    },
+    "katutura-clinic-day": {
+      "messages": {
+        "welcome": {
+          "author": "Campaign organizer · Professional",
+          "text": "Welcome. The event begins at 09:00 and basic screenings are free.",
+          "createdAt": 1785157200000
+        }
+      }
+    },
+    "family-support-circle": {
+      "messages": {
+        "welcome": {
+          "author": "Campaign organizer · Professional",
+          "text": "This is the public group for the Family Support Circle. Everyone is welcome to ask about accessibility and attendance.",
+          "createdAt": 1785592800000
+        }
+      }
+    }
+  }
+}
