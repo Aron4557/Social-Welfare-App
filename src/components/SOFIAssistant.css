@@ -1,0 +1,639 @@
+/* src/components/SOFIAssistant.css */
+
+/* SOFI Avatar - Floating */
+.sofi-avatar-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 10000;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Initial Message Bubble */
+.sofi-initial-message {
+  position: absolute;
+  bottom: 100px;
+  right: 0;
+  animation: floatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10001;
+}
+
+.sofi-message-bubble {
+  background: white;
+  padding: 16px 20px;
+  border-radius: 20px 20px 4px 20px;
+  box-shadow: 0 8px 30px rgba(128, 90, 213, 0.2);
+  max-width: 260px;
+  position: relative;
+  border: 1px solid rgba(128, 90, 213, 0.1);
+}
+
+.sofi-message-bubble p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #241A33;
+  font-family: 'Inter', sans-serif;
+}
+
+.sofi-message-sub {
+  display: block;
+  font-size: 0.8rem;
+  color: #58506A;
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.sofi-message-tail {
+  position: absolute;
+  bottom: -8px;
+  right: 20px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  transform: rotate(45deg);
+  border-radius: 0 0 4px 0;
+  border-right: 1px solid rgba(128, 90, 213, 0.1);
+  border-bottom: 1px solid rgba(128, 90, 213, 0.1);
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Avatar */
+.sofi-avatar {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.sofi-avatar:hover {
+  transform: scale(1.05);
+}
+
+.sofi-avatar.active {
+  transform: scale(0.9);
+}
+
+.sofi-avatar-ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  padding: 4px;
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+  position: relative;
+  animation: ringPulse 3s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4); }
+  50% { box-shadow: 0 8px 50px rgba(139, 92, 246, 0.6); }
+}
+
+.sofi-avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.sofi-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sofi-pulse-dot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  background: #34C759;
+  border-radius: 50%;
+  border: 3px solid white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.sofi-avatar-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #7C3AED;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  padding: 2px 12px;
+  border-radius: 12px;
+  letter-spacing: 1px;
+  margin-top: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Wave Ripples */
+.sofi-wave-ripple {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  animation: ripple 3s ease-out infinite;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.sofi-wave-ripple.delay-1 {
+  animation-delay: 1s;
+}
+
+.sofi-wave-ripple.delay-2 {
+  animation-delay: 2s;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Chat Window */
+.sofi-chat-container {
+  position: fixed;
+  bottom: 130px;
+  right: 30px;
+  width: 420px;
+  max-width: calc(100vw - 60px);
+  height: 580px;
+  max-height: calc(100vh - 180px);
+  background: #FFFFFF;
+  border-radius: 24px;
+  box-shadow: 0 25px 80px rgba(139, 92, 246, 0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  overflow: hidden;
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.sofi-chat-container.minimized {
+  height: 70px;
+  width: 350px;
+  border-radius: 24px;
+  bottom: 130px;
+}
+
+/* Chat Header - Purple Theme */
+.sofi-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  color: white;
+  flex-shrink: 0;
+}
+
+.sofi-chat-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sofi-header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.sofi-header-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sofi-header-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: #34C759;
+  border-radius: 50%;
+  border: 2px solid #6D28D9;
+}
+
+.sofi-chat-header h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sofi-chat-status {
+  font-size: 0.65rem;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: #34C759;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+.sofi-chat-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.sofi-icon-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sofi-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.close-btn:hover {
+  background: rgba(255, 0, 0, 0.3);
+}
+
+/* Messages */
+.sofi-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #FAF8F5;
+}
+
+.sofi-message {
+  display: flex;
+  animation: messageIn 0.3s ease;
+}
+
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sofi-message.user {
+  justify-content: flex-end;
+}
+
+.sofi-message.bot {
+  justify-content: flex-start;
+}
+
+.sofi-message-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 85%;
+}
+
+.sofi-message.user .sofi-message-content {
+  flex-direction: row-reverse;
+}
+
+.sofi-msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid #8B5CF6;
+}
+
+.sofi-msg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sofi-msg-text {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #241A33;
+}
+
+.sofi-msg-text p {
+  margin: 0 0 4px 0;
+}
+
+.sofi-msg-text p:last-child {
+  margin-bottom: 0;
+}
+
+.sofi-message.bot .sofi-msg-text {
+  background: white;
+  border-radius: 16px 16px 16px 4px;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08);
+}
+
+.sofi-message.user .sofi-msg-text {
+  background: #8B5CF6;
+  color: white;
+  border-radius: 16px 16px 4px 16px;
+}
+
+/* Typing Indicator */
+.sofi-typing-indicator {
+  display: flex;
+  gap: 5px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 16px 16px 16px 4px;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08);
+}
+
+.sofi-typing-indicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8B5CF6;
+  animation: typing 1.4s infinite;
+}
+
+.sofi-typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.sofi-typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-10px); opacity: 1; }
+}
+
+/* Quick Actions */
+.sofi-quick-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 20px;
+  overflow-x: auto;
+  border-top: 1px solid rgba(139, 92, 246, 0.1);
+  background: #FAF8F5;
+  flex-shrink: 0;
+}
+
+.sofi-quick-btn {
+  padding: 6px 14px;
+  background: white;
+  border: 1px solid #E5E0D8;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: #241A33;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+}
+
+.sofi-quick-btn:hover {
+  background: #8B5CF6;
+  color: white;
+  border-color: #8B5CF6;
+  transform: scale(1.05);
+}
+
+/* Input */
+.sofi-chat-input {
+  display: flex;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid rgba(139, 92, 246, 0.1);
+  background: white;
+  flex-shrink: 0;
+}
+
+.sofi-textarea {
+  flex: 1;
+  border: 1px solid #E5E0D8;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background: #F9F8F5;
+  min-height: 44px;
+  max-height: 80px;
+}
+
+.sofi-textarea:focus {
+  border-color: #8B5CF6;
+}
+
+.sofi-send-btn {
+  background: #8B5CF6;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 0 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+}
+
+.sofi-send-btn:hover:not(:disabled) {
+  background: #7C3AED;
+  transform: scale(1.05);
+}
+
+.sofi-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Human Connect */
+.sofi-human-connect {
+  padding: 10px 20px 14px;
+  border-top: 1px solid rgba(139, 92, 246, 0.1);
+  background: white;
+  flex-shrink: 0;
+}
+
+.sofi-human-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.sofi-human-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sofi-avatar-container {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .sofi-avatar {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .sofi-avatar-image {
+    font-size: 2.2rem;
+  }
+  
+  .sofi-chat-container {
+    bottom: 100px;
+    right: 16px;
+    width: calc(100vw - 32px);
+    height: calc(100vh - 140px);
+    max-height: 600px;
+  }
+  
+  .sofi-initial-message {
+    bottom: 80px;
+    right: 0;
+  }
+  
+  .sofi-message-bubble {
+    max-width: 200px;
+    padding: 12px 16px;
+  }
+  
+  .sofi-message-bubble p {
+    font-size: 0.9rem;
+  }
+  
+  .sofi-message-sub {
+    font-size: 0.7rem;
+  }
+  
+  .sofi-quick-actions {
+    padding: 8px 16px;
+    gap: 6px;
+  }
+  
+  .sofi-quick-btn {
+    font-size: 0.7rem;
+    padding: 4px 12px;
+  }
+  
+  .sofi-chat-input {
+    padding: 10px 16px;
+  }
+  
+  .sofi-human-connect {
+    padding: 8px 16px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sofi-avatar {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .sofi-chat-container {
+    height: calc(100vh - 120px);
+    max-height: 500px;
+  }
+  
+  .sofi-initial-message {
+    display: none;
+  }
+}
