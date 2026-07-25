@@ -9,6 +9,7 @@ import {
   LogIn, UserRoundPlus, LogOut
 } from "lucide-react";
 import SOFIAssistant from "../components/SOFIAssistant";
+import Modal from "../components/Modal";
 import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo.png";
 import bg from "../assets/background.jpg";
@@ -88,6 +89,7 @@ export default function Home() {
   const emergencyRef = useRef(null);
   const searchRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
 
   const handleFeatureClick = (link) => {
     if (link === "#") {
@@ -254,9 +256,22 @@ export default function Home() {
               </button>
             </>
           )}
-          <button className="emergency-btn" ref={emergencyRef}>
+          <button
+            className="emergency-btn"
+            ref={emergencyRef}
+            type="button"
+            onClick={() => setIsEmergencyOpen(true)}
+          >
             <Phone size={18} />
             <span>Emergency</span>
+          </button>
+          <button
+            className="emergency-btn mobile"
+            type="button"
+            onClick={() => setIsEmergencyOpen(true)}
+            aria-label="Open emergency contacts"
+          >
+            <Phone size={18} />
           </button>
         </div>
       </header>
@@ -363,6 +378,50 @@ export default function Home() {
 
       {/* SOFI Assistant */}
       <SOFIAssistant />
+
+      <Modal
+        isOpen={isEmergencyOpen}
+        onClose={() => setIsEmergencyOpen(false)}
+        title="Emergency contacts"
+      >
+        <p className="emergency-popup-intro">
+          Choose the service you need. Tapping a button will start a phone call.
+        </p>
+
+        <div className="emergency-call-list">
+          <a className="emergency-call-option" href="tel:10111">
+            <Phone size={20} />
+            <span>
+              <strong>Namibian Police</strong>
+              <small>10111</small>
+            </span>
+          </a>
+
+          <a className="emergency-call-option" href="tel:+26461232221">
+            <Phone size={20} />
+            <span>
+              <strong>Suicide &amp; Crisis Hotline</strong>
+              <small>+264 61 232 221</small>
+            </span>
+          </a>
+
+          <a className="emergency-call-option" href="tel:112">
+            <Phone size={20} />
+            <span>
+              <strong>Ambulance / Urgent Medical Help</strong>
+              <small>112 — ask for the nearest available care</small>
+            </span>
+          </a>
+        </div>
+
+        <button
+          className="emergency-popup-cancel"
+          type="button"
+          onClick={() => setIsEmergencyOpen(false)}
+        >
+          Cancel
+        </button>
+      </Modal>
     </div>
   );
 }

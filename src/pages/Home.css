@@ -1231,3 +1231,69 @@ html, body {
     transform: none !important;
   }
 }
+
+.emergency-popup-intro {
+  margin-bottom: 18px;
+}
+
+.emergency-call-list {
+  display: grid;
+  gap: 12px;
+}
+
+.emergency-call-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  border: 1px solid rgba(211, 47, 47, 0.18);
+  border-radius: 14px;
+  color: #8e2020;
+  background: #fff4f4;
+  text-decoration: none;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.emergency-call-option:hover {
+  border-color: rgba(211, 47, 47, 0.4);
+  background: #ffe9e9;
+  transform: translateY(-1px);
+}
+
+.emergency-call-option span {
+  display: grid;
+  gap: 2px;
+}
+
+.emergency-call-option strong {
+  color: #6f1717;
+  line-height: 1.25;
+}
+
+.emergency-call-option small {
+  color: #9b5555;
+  font-size: 0.84rem;
+}
+
+.emergency-popup-cancel {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 18px;
+  border: 1px solid #cbd7d9;
+  border-radius: 12px;
+  color: #35535c;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.emergency-popup-cancel:hover {
+  background: #f2f7f7;
+}
+
+.emergency-call-option:focus-visible,
+.emergency-popup-cancel:focus-visible {
+  outline: 3px solid rgba(211, 47, 47, 0.28);
+  outline-offset: 3px;
+}
