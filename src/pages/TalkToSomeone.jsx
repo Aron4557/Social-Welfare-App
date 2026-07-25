@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
+import { onValue, push, ref, serverTimestamp, update } from "firebase/database";
 import gsap from "gsap";
 import { ArrowLeft, Briefcase, CheckCheck, Circle, LockKeyhole, MapPin, MessageCircle, Search, Send, ShieldCheck, UserRound } from "lucide-react";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
-import { db } from "../firebase";
+import { db, realtimeDb } from "../firebase";
 import "./TalkToSomeone.css";
 
 const FALLBACK_WORKERS = [
@@ -55,20 +56,56 @@ export default function TalkToSomeone() {
 
   useEffect(() => {
     if (!user) return undefined;
-    const chatsQuery = query(collection(db, "supportChats"), where(isProfessional ? "professionalId" : "userId", "==", user.uid));
-    return onSnapshot(chatsQuery, (snapshot) => {
-      const loaded = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
-        .sort((a, b) => toMillis(b.updatedAt) - toMillis(a.updatedAt));
-      setConversations(loaded);
-    }, () => setError("Chats could not be loaded. Check your connection and Firestore rules."));
+    const indexPath = isProfessional ? `professionalChats/${user.uid}` : `userChats/${user.uid}`;
+    const chatUnsubscribers = new Map();
+    const chatValues = new Map();
+
+    const publishChats = () => {
+      setConversations(
+        [...chatValues.values()].sort((a, b) => toMillis(b.updatedAt) - toMillis(a.updatedAt)),
+      );
+    };
+
+    const unsubscribeIndex = onValue(ref(realtimeDb, indexPath), (snapshot) => {
+      const ids = new Set(Object.keys(snapshot.val() || {}));
+
+      chatUnsubscribers.forEach((unsubscribe, id) => {
+        if (!ids.has(id)) {
+          unsubscribe();
+          chatUnsubscribers.delete(id);
+          chatValues.delete(id);
+        }
+      });
+
+      ids.forEach((id) => {
+        if (chatUnsubscribers.has(id)) return;
+        const unsubscribeChat = onValue(ref(realtimeDb, `privateChats/${id}/metadata`), (chatSnapshot) => {
+          const value = chatSnapshot.val();
+          if (value) chatValues.set(id, { id, ...value });
+          else chatValues.delete(id);
+          publishChats();
+        });
+        chatUnsubscribers.set(id, unsubscribeChat);
+      });
+      publishChats();
+    }, () => setError("Live chats could not be loaded. Check your Realtime Database rules."));
+
+    return () => {
+      unsubscribeIndex();
+      chatUnsubscribers.forEach((unsubscribe) => unsubscribe());
+    };
   }, [isProfessional, user]);
 
   useEffect(() => {
     if (!selectedId) return undefined;
-    const messagesQuery = query(collection(db, "supportChats", selectedId, "messages"), orderBy("createdAt", "asc"));
-    return onSnapshot(messagesQuery, (snapshot) => {
-      setMessages(snapshot.docs.map((item) => ({ id: item.id, ...item.data() })));
-    }, () => setError("Messages could not be loaded."));
+    return onValue(ref(realtimeDb, `privateChats/${selectedId}/messages`), (snapshot) => {
+      const value = snapshot.val() || {};
+      setMessages(
+        Object.entries(value)
+          .map(([id, message]) => ({ id, ...message }))
+          .sort((a, b) => toMillis(a.createdAt) - toMillis(b.createdAt)),
+      );
+    }, () => setError("Live messages could not be loaded."));
   }, [selectedId]);
 
   useEffect(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
@@ -94,16 +131,20 @@ export default function TalkToSomeone() {
   };
 
   const openWorkerChat = async (worker) => {
-    const conversationId = `${user.uid}_${worker.id}`;
+    const conversationId = `support_${user.uid}_${worker.id}`;
     try {
-      await setDoc(doc(db, "supportChats", conversationId), {
+      await update(ref(realtimeDb, `privateChats/${conversationId}/metadata`), {
         userId: user.uid,
         professionalId: worker.id,
         professionalName: worker.name,
         userDisplayName: anonymous ? "Anonymous member" : memberName(),
         isAnonymous: anonymous,
         updatedAt: serverTimestamp(),
-      }, { merge: true });
+      });
+      await update(ref(realtimeDb), {
+        [`userChats/${user.uid}/${conversationId}`]: true,
+        [`professionalChats/${worker.id}/${conversationId}`]: true,
+      });
       selectChat(conversationId);
       setError("");
     } catch {
@@ -115,7 +156,7 @@ export default function TalkToSomeone() {
     setAnonymous(nextAnonymous);
     if (!selectedConversation || isProfessional) return;
     try {
-      await updateDoc(doc(db, "supportChats", selectedConversation.id), {
+      await update(ref(realtimeDb, `privateChats/${selectedConversation.id}/metadata`), {
         isAnonymous: nextAnonymous,
         userDisplayName: nextAnonymous ? "Anonymous member" : memberName(),
         updatedAt: serverTimestamp(),
@@ -130,10 +171,15 @@ export default function TalkToSomeone() {
     if (!text || !selectedId || !user) return;
     setMessageText("");
     try {
-      await addDoc(collection(db, "supportChats", selectedId, "messages"), {
-        text, senderId: user.uid, senderRole: isProfessional ? "professional" : "user", createdAt: serverTimestamp(),
+      const messageRef = push(ref(realtimeDb, `privateChats/${selectedId}/messages`));
+      await update(ref(realtimeDb), {
+        [`privateChats/${selectedId}/messages/${messageRef.key}/text`]: text,
+        [`privateChats/${selectedId}/messages/${messageRef.key}/senderId`]: user.uid,
+        [`privateChats/${selectedId}/messages/${messageRef.key}/senderRole`]: isProfessional ? "professional" : "user",
+        [`privateChats/${selectedId}/messages/${messageRef.key}/createdAt`]: serverTimestamp(),
+        [`privateChats/${selectedId}/metadata/lastMessage`]: text,
+        [`privateChats/${selectedId}/metadata/updatedAt`]: serverTimestamp(),
       });
-      await updateDoc(doc(db, "supportChats", selectedId), { lastMessage: text, updatedAt: serverTimestamp() });
       setError("");
     } catch {
       setMessageText(text);

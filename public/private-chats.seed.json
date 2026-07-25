@@ -1,0 +1,45 @@
+{
+  "privateChats": {
+    "support_demo-user_demo-professional": {
+      "metadata": {
+        "userId": "demo-user",
+        "professionalId": "demo-professional",
+        "professionalName": "Demo Support Professional",
+        "userDisplayName": "Anonymous member",
+        "isAnonymous": true,
+        "lastMessage": "Thank you. I would like someone to talk to.",
+        "updatedAt": 1784970000000
+      },
+      "messages": {
+        "message-001": {
+          "text": "Hello, I would like some support.",
+          "senderId": "demo-user",
+          "senderRole": "user",
+          "createdAt": 1784969940000
+        },
+        "message-002": {
+          "text": "You are welcome here. How can I support you today?",
+          "senderId": "demo-professional",
+          "senderRole": "professional",
+          "createdAt": 1784969970000
+        },
+        "message-003": {
+          "text": "Thank you. I would like someone to talk to.",
+          "senderId": "demo-user",
+          "senderRole": "user",
+          "createdAt": 1784970000000
+        }
+      }
+    }
+  },
+  "userChats": {
+    "demo-user": {
+      "support_demo-user_demo-professional": true
+    }
+  },
+  "professionalChats": {
+    "demo-professional": {
+      "support_demo-user_demo-professional": true
+    }
+  }
+}
