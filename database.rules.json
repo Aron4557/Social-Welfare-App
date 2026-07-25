@@ -6,6 +6,7 @@
       "$chatId": {
         ".read": "auth != null && (data.child('metadata/userId').val() === auth.uid || data.child('metadata/professionalId').val() === auth.uid)",
         ".write": "auth != null && ((!data.exists() && newData.child('metadata/userId').val() === auth.uid) || data.child('metadata/userId').val() === auth.uid || data.child('metadata/professionalId').val() === auth.uid)",
+        ".validate": "newData.hasChild('metadata') && newData.child('metadata').hasChildren(['userId', 'professionalId', 'professionalName', 'userDisplayName', 'isAnonymous', 'updatedAt'])",
         "metadata": {
           "userId": {
             ".validate": "newData.isString() && (!data.exists() || newData.val() === data.val())"
@@ -19,7 +20,7 @@
         },
         "messages": {
           "$messageId": {
-            ".validate": "newData.hasChildren(['text', 'senderId', 'senderRole', 'createdAt']) && newData.child('senderId').val() === auth.uid && newData.child('text').isString() && newData.child('text').val().length <= 5000"
+            ".validate": "newData.hasChildren(['text', 'senderId', 'senderRole', 'createdAt']) && newData.child('senderId').val() === auth.uid && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 5000 && ((newData.child('senderRole').val() === 'user' && auth.uid === root.child('privateChats/' + $chatId + '/metadata/userId').val()) || (newData.child('senderRole').val() === 'professional' && auth.uid === root.child('privateChats/' + $chatId + '/metadata/professionalId').val()))"
           }
         }
       }
@@ -28,7 +29,7 @@
       "$userId": {
         ".read": "auth != null && auth.uid === $userId",
         "$chatId": {
-          ".write": "auth != null && auth.uid === $userId && newData.val() === true"
+          ".write": "auth != null && auth.uid === $userId && newData.val() === true && root.child('privateChats/' + $chatId + '/metadata/userId').val() === auth.uid"
         }
       }
     },
@@ -36,16 +37,17 @@
       "$professionalId": {
         ".read": "auth != null && auth.uid === $professionalId",
         "$chatId": {
-          ".write": "auth != null && root.child('privateChats/' + $chatId + '/metadata/userId').val() === auth.uid && newData.val() === true"
+          ".write": "auth != null && newData.val() === true && root.child('privateChats/' + $chatId + '/metadata/professionalId').val() === $professionalId && (root.child('privateChats/' + $chatId + '/metadata/userId').val() === auth.uid || auth.uid === $professionalId)"
         }
       }
     },
     "campaignChats": {
-      ".read": true,
       "$campaignId": {
         "messages": {
+          ".read": true,
           "$messageId": {
-            ".write": "auth != null"
+            ".write": "!data.exists() && newData.hasChildren(['text', 'author', 'createdAt'])",
+            ".validate": "newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 800 && newData.child('author').isString() && newData.child('author').val().length > 0 && newData.child('author').val().length <= 100 && newData.child('createdAt').isNumber()"
           }
         }
       }

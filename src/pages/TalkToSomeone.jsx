@@ -9,20 +9,15 @@ import { useAuth } from "../context/AuthContext";
 import { db, realtimeDb } from "../firebase";
 import "./TalkToSomeone.css";
 
-const FALLBACK_WORKERS = [
-  { id: "sarah", name: "Dr. Sarah Johnson", specialty: "Mental Health Counselor", location: "Windhoek", online: true },
-  { id: "peter", name: "Peter Nangolo", specialty: "Social Worker", location: "Windhoek", online: true },
-  { id: "maria", name: "Maria Kambonde", specialty: "Child Protection Specialist", location: "Windhoek", online: false },
-];
-
 const initials = (name = "Anonymous member") => name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-const toMillis = (value) => value?.toMillis?.() || value || Date.now();
+const toMillis = (value) => value?.toMillis?.() || Number(value) || 0;
 const formatTime = (value) => new Date(toMillis(value)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 const formatDay = (value) => new Date(toMillis(value)).toLocaleDateString([], { day: "numeric", month: "short" });
 
 export default function TalkToSomeone() {
   const { user, isProfessional, profile } = useAuth();
-  const [workers, setWorkers] = useState(FALLBACK_WORKERS);
+  const [workers, setWorkers] = useState([]);
+  const [workersLoading, setWorkersLoading] = useState(true);
   const [conversations, setConversations] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -30,6 +25,8 @@ export default function TalkToSomeone() {
   const [searchQuery, setSearchQuery] = useState("");
   const [anonymous, setAnonymous] = useState(true);
   const [error, setError] = useState("");
+  const [openingChatId, setOpeningChatId] = useState(null);
+  const [sending, setSending] = useState(false);
   const panelRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -40,19 +37,26 @@ export default function TalkToSomeone() {
   }, []);
 
   useEffect(() => onSnapshot(collection(db, "Professionals"), (snapshot) => {
-    const loaded = snapshot.docs.map((item) => {
-      const data = item.data();
-      const name = data.name || data.Name || "Support professional";
-      return {
-        id: item.id,
-        name,
-        specialty: data.position || data.Position || "Social welfare professional",
-        location: data.location || data.Location || "Namibia",
-        online: data.online !== false,
-      };
-    });
-    if (loaded.length) setWorkers(loaded);
-  }, () => {}), []);
+    const loaded = snapshot.docs
+      .map((item) => {
+        const data = item.data();
+        return {
+          id: item.id,
+          name: data.name || data.Name || "Support practitioner",
+          specialty: data.position || data.Position || "Social welfare practitioner",
+          location: data.location || data.Location || "Namibia",
+          online: data.online !== false,
+        };
+      })
+      .filter((worker) => worker.id && worker.id !== user?.uid)
+      .sort((a, b) => a.name.localeCompare(b.name));
+    setWorkers(loaded);
+    setWorkersLoading(false);
+  }, () => {
+    setWorkers([]);
+    setWorkersLoading(false);
+    setError("Practitioners could not be loaded. Check the Firestore access rules.");
+  }), [user?.uid]);
 
   useEffect(() => {
     if (!user) return undefined;
@@ -131,8 +135,13 @@ export default function TalkToSomeone() {
   };
 
   const openWorkerChat = async (worker) => {
+    if (!user || isProfessional) return;
     const conversationId = `support_${user.uid}_${worker.id}`;
+    setOpeningChatId(worker.id);
     try {
+      // An update creates missing metadata without deleting an existing message
+      // collection. Do not read first: private rules intentionally deny reads
+      // until the chat exists and contains the signed-in user's UID.
       await update(ref(realtimeDb, `privateChats/${conversationId}/metadata`), {
         userId: user.uid,
         professionalId: worker.id,
@@ -147,8 +156,11 @@ export default function TalkToSomeone() {
       });
       selectChat(conversationId);
       setError("");
-    } catch {
-      setError("The conversation could not be opened. Please try again.");
+    } catch (chatError) {
+      console.error("Unable to open conversation", chatError);
+      setError("The conversation could not be opened. Check the Realtime Database rules and try again.");
+    } finally {
+      setOpeningChatId(null);
     }
   };
 
@@ -168,7 +180,8 @@ export default function TalkToSomeone() {
 
   const handleSend = async () => {
     const text = messageText.trim();
-    if (!text || !selectedId || !user) return;
+    if (!text || !selectedId || !user || sending) return;
+    setSending(true);
     setMessageText("");
     try {
       const messageRef = push(ref(realtimeDb, `privateChats/${selectedId}/messages`));
@@ -181,9 +194,12 @@ export default function TalkToSomeone() {
         [`privateChats/${selectedId}/metadata/updatedAt`]: serverTimestamp(),
       });
       setError("");
-    } catch {
+    } catch (messageError) {
+      console.error("Unable to send message", messageError);
       setMessageText(text);
-      setError("Your message was not sent. Please try again.");
+      setError("Your message was not sent. Check the Realtime Database rules and try again.");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -240,7 +256,7 @@ export default function TalkToSomeone() {
             <div className="talk-section">
               <p className="talk-section-label">{isProfessional ? `Conversations (${conversations.length})` : "Available professionals"}</p>
               {!sidebarItems.length && (
-                <div className="talk-inbox-empty"><MessageCircle size={26} /><p>{isProfessional ? "No user conversations yet." : "No professionals match your search."}</p></div>
+                <div className="talk-inbox-empty"><MessageCircle size={26} /><p>{isProfessional ? "No user conversations yet." : workersLoading ? "Loading practitioners…" : workers.length ? "No practitioners match your search." : "No registered practitioners are available yet."}</p></div>
               )}
 
               {isProfessional ? sidebarItems.map((chat) => (
@@ -253,7 +269,7 @@ export default function TalkToSomeone() {
                   </span>
                 </button>
               )) : sidebarItems.map((worker) => (
-                <button type="button" key={worker.id} className={`talk-list-item ${selectedWorker?.id === worker.id ? "active" : ""}`} onClick={() => openWorkerChat(worker)}>
+                <button type="button" key={worker.id} disabled={openingChatId === worker.id} className={`talk-list-item ${selectedWorker?.id === worker.id ? "active" : ""}`} onClick={() => openWorkerChat(worker)}>
                   <span className="talk-avatar">{initials(worker.name)}{worker.online && <span className="talk-online-dot" />}</span>
                   <span className="talk-list-item-info">
                     <span className="talk-list-item-top"><strong>{worker.name}</strong><small className={worker.online ? "online-status" : "offline-status"}>{worker.online ? "Online" : "Offline"}</small></span>
@@ -306,7 +322,7 @@ export default function TalkToSomeone() {
               {error && <p className="talk-error" role="alert">{error}</p>}
               <div className="talk-input-bar">
                 <textarea rows={1} placeholder={isProfessional ? "Reply to this user..." : "Type a message..."} value={messageText} onChange={(event) => setMessageText(event.target.value)} onKeyDown={handleKeyDown} />
-                <button className="talk-send-btn" type="button" aria-label="Send message" onClick={handleSend} disabled={!messageText.trim()}><Send size={18} /></button>
+                <button className="talk-send-btn" type="button" aria-label="Send message" onClick={handleSend} disabled={!messageText.trim() || sending}><Send size={18} /></button>
               </div>
             </>
           )}
