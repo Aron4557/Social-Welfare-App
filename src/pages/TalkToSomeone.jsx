@@ -9,8 +9,13 @@ import { useAuth } from "../context/AuthContext";
 import { db, realtimeDb } from "../firebase";
 import "./TalkToSomeone.css";
 
-const initials = (name = "Anonymous member") => name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-const toMillis = (value) => value?.toMillis?.() || Number(value) || 0;
+const safeText = (value, fallback = "") => typeof value === "string" ? value : fallback;
+const initials = (name) => safeText(name, "Anonymous member").split(/\s+/).filter(Boolean).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+const toMillis = (value) => {
+  const firestoreMillis = typeof value?.toMillis === "function" ? value.toMillis() : null;
+  const millis = firestoreMillis ?? (typeof value === "number" ? value : Number(value));
+  return Number.isFinite(millis) ? millis : 0;
+};
 const formatTime = (value) => new Date(toMillis(value)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 const formatDay = (value) => new Date(toMillis(value)).toLocaleDateString([], { day: "numeric", month: "short" });
 
@@ -85,7 +90,15 @@ export default function TalkToSomeone() {
         if (chatUnsubscribers.has(id)) return;
         const unsubscribeChat = onValue(ref(realtimeDb, `privateChats/${id}/metadata`), (chatSnapshot) => {
           const value = chatSnapshot.val();
-          if (value) chatValues.set(id, { id, ...value });
+          if (value && typeof value === "object") {
+            chatValues.set(id, {
+              id,
+              ...value,
+              professionalName: safeText(value.professionalName, "Support practitioner"),
+              userDisplayName: safeText(value.userDisplayName, "Anonymous member"),
+              lastMessage: safeText(value.lastMessage),
+            });
+          }
           else chatValues.delete(id);
           publishChats();
         });
@@ -103,16 +116,31 @@ export default function TalkToSomeone() {
   useEffect(() => {
     if (!selectedId) return undefined;
     return onValue(ref(realtimeDb, `privateChats/${selectedId}/messages`), (snapshot) => {
-      const value = snapshot.val() || {};
+      const value = snapshot.val();
+      if (!value || typeof value !== "object") {
+        setMessages([]);
+        return;
+      }
       setMessages(
         Object.entries(value)
-          .map(([id, message]) => ({ id, ...message }))
+          .filter(([, message]) => message && typeof message === "object")
+          .map(([id, message]) => ({
+            id,
+            senderId: safeText(message.senderId),
+            senderRole: safeText(message.senderRole),
+            text: safeText(message.text, "[Message unavailable]"),
+            createdAt: message.createdAt,
+          }))
           .sort((a, b) => toMillis(a.createdAt) - toMillis(b.createdAt)),
       );
     }, () => setError("Live messages could not be loaded."));
   }, [selectedId]);
 
-  useEffect(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
+  useEffect(() => {
+    if (typeof messagesEndRef.current?.scrollIntoView === "function") {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const selectedConversation = conversations.find((chat) => chat.id === selectedId);
   const selectedWorker = workers.find((worker) => worker.id === (selectedConversation?.professionalId || selectedId));
