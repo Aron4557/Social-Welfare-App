@@ -640,3 +640,169 @@
     justify-content: center;
   }
 }
+
+/* Role-aware inbox and privacy controls */
+.talk-header-subtitle {
+  margin: 2px 0 0;
+  color: #71697e;
+  font-size: 0.72rem;
+}
+
+.talk-privacy-card {
+  margin: 14px 14px 4px;
+  padding: 14px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 16px;
+  background: #faf8ff;
+}
+
+.talk-privacy-card > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5b21b6;
+  font-size: 0.82rem;
+}
+
+.talk-privacy-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.talk-privacy-options button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  border: 1px solid #ddd6eb;
+  border-radius: 10px;
+  color: #625873;
+  background: white;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.talk-privacy-options button.active {
+  border-color: #8b5cf6;
+  color: white;
+  background: #7c3aed;
+}
+
+.talk-privacy-card p {
+  margin: 9px 2px 0;
+  color: #71697e;
+  font-size: 0.69rem;
+  line-height: 1.4;
+}
+
+button.talk-list-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+}
+
+.talk-list-item-top strong {
+  overflow: hidden;
+  color: #241a33;
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.talk-conversation-item {
+  display: flex;
+  width: 100%;
+  gap: 11px;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 14px;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.talk-conversation-item:hover,
+.talk-conversation-item.active {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.talk-avatar.anonymous {
+  color: #5b21b6;
+  background: #ede9fe;
+}
+
+.talk-conversation-copy {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 3px;
+  color: #71697e;
+  font-size: 0.76rem;
+}
+
+.talk-conversation-copy > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.talk-conversation-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #241a33;
+  font-size: 0.84rem;
+}
+
+.talk-conversation-top small {
+  color: #9c93ac;
+  font-weight: 400;
+}
+
+.talk-conversation-copy em {
+  color: #7c3aed;
+  font-size: 0.65rem;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.talk-inbox-empty {
+  display: grid;
+  place-items: center;
+  gap: 7px;
+  padding: 28px 15px;
+  color: #9c93ac;
+  text-align: center;
+}
+
+.talk-inbox-empty p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.talk-error {
+  margin: 0;
+  padding: 8px 20px;
+  color: #a12626;
+  background: #fff1f1;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 480px) {
+  .talk-header-subtitle {
+    display: none;
+  }
+
+  .talk-privacy-card {
+    margin: 10px 12px 4px;
+  }
+}
