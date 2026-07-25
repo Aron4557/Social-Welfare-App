@@ -57,7 +57,8 @@ const DONATION_CARDS = [
     Icon: Users,
     color: "#FF7A45",
     bgColor: "rgba(255, 122, 69, 0.1)",
-    target: "2,500 children"
+    target: "2,500 children",
+    link: "/donations/children"  // ADD THIS
   },
   { 
     title: "Support Elderly", 
@@ -65,7 +66,8 @@ const DONATION_CARDS = [
     Icon: Heart,
     color: "#3AC4A3",
     bgColor: "rgba(58, 196, 163, 0.1)",
-    target: "1,200 seniors"
+    target: "1,200 seniors",
+    link: "/donations/elderly"  // ADD THIS
   },
   { 
     title: "Feed the Poor", 
@@ -73,7 +75,8 @@ const DONATION_CARDS = [
     Icon: Coffee,
     color: "#FFB088",
     bgColor: "rgba(255, 176, 136, 0.1)",
-    target: "5,000 meals"
+    target: "5,000 meals",
+    link: "/donations/food"  // ADD THIS
   },
 ];
 
@@ -104,6 +107,11 @@ export default function Home() {
     if (searchQuery.trim()) {
       navigate(`/info-hub?search=${encodeURIComponent(searchQuery)}`);
     }
+  };
+
+  // ADD THIS FUNCTION
+  const handleDonationClick = (link) => {
+    navigate(link);
   };
 
   useEffect(() => {
@@ -345,8 +353,10 @@ export default function Home() {
                   ref={(el) => (donationRef.current[index] = el)}
                   style={{ 
                     borderBottom: `4px solid ${donation.color}`,
-                    background: donation.bgColor
+                    background: donation.bgColor,
+                    cursor: 'pointer'  // ADD THIS
                   }}
+                  onClick={() => handleDonationClick(donation.link)}  // ADD THIS
                 >
                   <div className="donation-icon" style={{ color: donation.color, background: donation.bgColor }}>
                     <donation.Icon size={28} />
@@ -357,7 +367,14 @@ export default function Home() {
                     <Shield size={16} />
                     <span>Target: {donation.target}</span>
                   </div>
-                  <button className="donate-btn" style={{ background: donation.color }}>
+                  <button 
+                    className="donate-btn" 
+                    style={{ background: donation.color }}
+                    onClick={(e) => {
+                      e.stopPropagation();  // Prevent double firing
+                      handleDonationClick(donation.link);
+                    }}
+                  >
                     Donate Now
                     <ArrowRight size={16} />
                   </button>

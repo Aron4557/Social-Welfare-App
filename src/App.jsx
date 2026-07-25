@@ -11,6 +11,10 @@ import Campaigns from "./pages/campaigns";
 import BetterTogether from "./pages/better_together";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+// ADD THESE IMPORTS
+import DonationChildren from "./pages/DonationChildren";
+import DonationElderly from "./pages/DonationElderly";
+import DonationFood from "./pages/DonationFood";
 
 function App() {
   return (
@@ -25,6 +29,12 @@ function App() {
           <Route path="/sign-up/professional" element={<ProfessionalSignUp />} />
           <Route path="/campaigns" element={<Campaigns />} />
           <Route path="/better-together" element={<BetterTogether />} />
+          
+          {/* ADD DONATION ROUTES */}
+          <Route path="/donations/children" element={<DonationChildren />} />
+          <Route path="/donations/elderly" element={<DonationElderly />} />
+          <Route path="/donations/food" element={<DonationFood />} />
+          
           <Route
             path="/talk-to-someone"
             element={
